@@ -1,0 +1,17 @@
+{
+  "name": "com.laza.sinstaller",
+  "version": "1.0.0",
+  "displayName": "Submodule Installer",
+  "description": "Package made with love \u2661 to clone and add the package as local in unity",
+  "unity": "2019.4",
+  "unityRelease": "1f1",
+  "keywords": [
+    "submodule",
+    "package"
+  ],
+  "author": {
+    "name": "Laza",
+    "email": "rafaellazarinwork@gmail.com",
+    "url": "https://github.com/rsdal/CFG"
+  }
+}
