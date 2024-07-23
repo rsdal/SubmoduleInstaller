@@ -63,7 +63,7 @@ public class SubmoduleInstaller
 
             if (Directory.Exists(localPath))
             {
-                string packagePath = "file:" + GetRelativePath(localPath, targetDirectory);
+                string packagePath = $"file:{GetRelativePath(Application.dataPath, targetDirectory)}/{folderNameFromUrl}";
                 AddRequest request = Client.Add(packagePath);
                 
                 while (!request.IsCompleted)
@@ -96,35 +96,22 @@ public class SubmoduleInstaller
         string folderName = Path.GetFileNameWithoutExtension(uri.LocalPath);
         return folderName;
     }
-
-    private string GetRelativePath(string absolutePath, string targetDirectory)
+    
+    private string GetRelativePath(string basePath, string targetPath)
     {
-        Uri projectUri = new Uri(Application.dataPath);
-        Uri folderUri = new Uri(absolutePath);
-        Uri relativeUri = projectUri.MakeRelativeUri(folderUri);
-
-        string[] remainingTargetDirectory = targetDirectory.Split('/');
-        string[] remainingPathSegments = absolutePath.Split('/');
-
-        int commonPathLength = 0;
-        for (int i = remainingPathSegments.Length - 1; i >= 0; i--)
+        // Ensure paths end with a directory separator
+        if (!basePath.EndsWith(Path.DirectorySeparatorChar.ToString()))
         {
-            if (remainingPathSegments[i] == remainingTargetDirectory[^1])
-            {
-                break;
-            }
-
-            commonPathLength++;
+            basePath += Path.DirectorySeparatorChar;
         }
 
-        // Convert the relative URI to a relative path
-        string relativePath = Uri.UnescapeDataString(relativeUri.ToString());
-        relativePath = relativePath.Replace('/', System.IO.Path.DirectorySeparatorChar);
+        Uri baseUri = new Uri(basePath);
+        Uri targetUri = new Uri(targetPath);
 
-        for (int i = 0; i < commonPathLength; i++)
-        {
-            relativePath = Path.Combine("..", relativePath);
-        }
+        Uri relativeUri = baseUri.MakeRelativeUri(targetUri);
+
+        // Replace forward slashes with backslashes if on Windows
+        string relativePath = Uri.UnescapeDataString(relativeUri.ToString()).Replace('/', Path.DirectorySeparatorChar);
 
         return relativePath;
     }

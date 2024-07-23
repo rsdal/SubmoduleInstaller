@@ -16,8 +16,6 @@ public class SubmoduleInstallerWindow : EditorWindow
         SubmoduleInstallerWindow window = GetWindow<SubmoduleInstallerWindow>();
         window.titleContent = new GUIContent("Submodule installer window");
         window.minSize = new Vector2(600, 400);
-        
-        submoduleInstaller = new SubmoduleInstaller();
     }
 
     public void CreateGUI()
@@ -51,8 +49,11 @@ public class SubmoduleInstallerWindow : EditorWindow
 
         Button enterButton = new Button(() =>
         {
+            submoduleInstaller = new SubmoduleInstaller();
+            
             EditorUtility.DisplayProgressBar("Cloning", "Cloning repository...", 0);
             submoduleInstaller.Clone(folderPathText, gitUrlText);
+            
             EditorUtility.ClearProgressBar();
             submoduleInstaller.AddToPackage(folderPathText, gitUrlText);
         })
