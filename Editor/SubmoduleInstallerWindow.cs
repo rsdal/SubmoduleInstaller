@@ -8,7 +8,7 @@ public class SubmoduleInstallerWindow : EditorWindow
     private string folderPathText;
     private string gitUrlText;
 
-    private static SubmoduleInstaller submoduleInstaller;  
+    private static SubmoduleInstaller _submoduleInstaller;  
     
     [MenuItem("Window/Submodule Installer Window")]
     public static void ShowExample()
@@ -47,23 +47,33 @@ public class SubmoduleInstallerWindow : EditorWindow
         TextField gitUrl = new TextField("Git Repository URL");
         gitUrl.RegisterValueChangedCallback(evt => gitUrlText = evt.newValue);
 
-        Button enterButton = new Button(() =>
+        Button cloneButton = new Button(() =>
         {
-            submoduleInstaller = new SubmoduleInstaller();
-            
             EditorUtility.DisplayProgressBar("Cloning", "Cloning repository...", 0);
-            submoduleInstaller.Clone(folderPathText, gitUrlText);
-            
-            EditorUtility.ClearProgressBar();
-            submoduleInstaller.AddToPackage(folderPathText, gitUrlText);
+            GetInstanceSubmoduleInstance().Clone(folderPathText, gitUrlText);
         })
         {
-            text = "Clone and Add to Package"
+            text = "Clone"
+        };
+        
+        Button addPackageButton = new Button(() =>
+        {
+            EditorUtility.ClearProgressBar();
+            GetInstanceSubmoduleInstance().AddToPackage(folderPathText, gitUrlText);
+        })
+        {
+            text = "Add to Packages"
         };
 
         root.Add(folderPathField);
         root.Add(selectFolderButton);
         root.Add(gitUrl);
-        root.Add(enterButton);
+        root.Add(cloneButton);
+        root.Add(addPackageButton);
+    }
+
+    private SubmoduleInstaller GetInstanceSubmoduleInstance()
+    {
+        return _submoduleInstaller ??= new SubmoduleInstaller();
     }
 }
